@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -21,15 +23,18 @@ public class MainActivity extends AppCompatActivity {
     String base_URL = "";
     String result="";
 
+    Button btnRequest;
     TextView xml_view;
+    EditText url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btnRequest = (Button) findViewById(R.id.POST_XML_BUTTON);
-        TextView textview = (TextView) findViewById(R.id.XML_VIEW);
+        btnRequest = (Button) findViewById(R.id.POST_XML_BUTTON);
+        xml_view = (TextView)findViewById(R.id.XML_VIEW);
+        url = (EditText) findViewById(R.id.URL_Edit);
 
         //텍스트스크롤기능
         btnRequest.setOnClickListener(new View.OnClickListener() {
@@ -45,11 +50,9 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         try {
 
-                            base_URL = "http://apis.data.go.kr/1300000/bistGongseok/list/bistGongseok/list?serviceKey=6tLZdNCgFtUUkC1aMEPPSDH5EqZB09HbJ9vEwO1DeRGItkpZQzyAxdTw2npenOfhIQdsklstTNt9qrj2RODhkQ%3D%3D&numOfRows=10&pageSize=10&pageNo=1&startPage=1";
-                            //base_URL = "http://www.naver.com/";
-                            getXmlData(base_URL);
-                            xml_view = (TextView)findViewById(R.id.XML_VIEW);
-                            xml_view.setText(result);
+                            base_URL = url.getText().toString();
+
+                            xml_view.setText(getXmlData(base_URL));
 
 
                         } catch (Exception e) {
@@ -86,64 +89,31 @@ public class MainActivity extends AppCompatActivity {
 
     /////////////////////////////////////
 
-    void getXmlData(String url_base) {
-
+    private String getXmlData(String url_base) {
+        InputStream is;
+        BufferedReader reader;
+        StringBuilder sb;
         try {
             URL url = new URL(url_base); //문자열로 된 요청 url을 URL 객체로 생성.
-            InputStream is = url.openStream();  //url위치로 입력스트림 연결
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-            XmlPullParser xpp = factory.newPullParser();
-            xpp.setInput(new InputStreamReader(is, "UTF-8"));  //inputstream 으로부터 xml 입력받기
+            is = url.openStream();  //url위치로 입력스트림 연결
 
-            String tag;
+            reader = new BufferedReader(new InputStreamReader(is));
+            sb = new StringBuilder();
 
-            xpp.next();
-            int eventType = xpp.getEventType();
+            String line = null;
 
-            while (eventType != XmlPullParser.END_DOCUMENT) {
-
-                switch (eventType) {
-
-                    case XmlPullParser.START_TAG:
-                        tag = xpp.getName();
-                        //테그 이름 얻어오기
-                        if (tag.equals("bjdsggjusoCd")) {
-                            xpp.next();
-                            result += "우편주소 : " + xpp.getText() + "\n";
-                        }else if(tag.equals("bjdsggjusoNm")){
-                            xpp.next();
-                            result += "주소 : " + xpp.getText() + "\n";
-                        }else if(tag.equals("bmgigwanNm")){
-                            xpp.next();
-                            result += "기관명 : " + xpp.getText() + "\n";
-                        }else if(tag.equals("rnum")){
-                            xpp.next();
-                            result += "공석수 : " + xpp.getText() + "\n";
-                        }
-                        break;
-
-                    case XmlPullParser.TEXT:
-                        break;
-
-                    case XmlPullParser.END_TAG: // </> End Tag
-                        tag = xpp.getName();    //테그 이름 얻어오기
-
-                        if (tag.equals("item")){
-
-                        }
-
-
-
-                        break;
-                }
-
-                eventType = xpp.next();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append('\n');
             }
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return "None";
         }
+
+
+        return sb.toString();
 
     }
 }

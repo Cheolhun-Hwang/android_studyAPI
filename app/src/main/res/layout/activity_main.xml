@@ -14,12 +14,9 @@
         android:layout_height="wrap_content"
         android:text="Button"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="26dp"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.028"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp" />
 
@@ -38,6 +35,21 @@
             android:layout_marginBottom="8dp"
             app:layout_constraintHorizontal_bias="0.538"
             app:layout_constraintVertical_bias="0.463" />
+
+    <EditText
+        android:id="@+id/URL_Edit"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="28dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="26dp"
+        android:ems="100"
+        android:hint="URL"
+        android:inputType="textPersonName"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/POST_XML_BUTTON"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>
